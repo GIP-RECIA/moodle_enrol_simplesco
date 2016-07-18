@@ -13,7 +13,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version   = 2016071300;        // The current plugin version (Date: YYYYMMDDXX)
+$plugin->version   = 2016071301;        // The current plugin version (Date: YYYYMMDDXX)
 $plugin->requires  = 2014110400;        // Requires this Moodle version
 $plugin->component = 'enrol_simplesco';    // Full name of the plugin (used for diagnostics)
 $plugin->cron      = 600;

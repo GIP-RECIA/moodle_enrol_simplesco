@@ -371,6 +371,10 @@ switch ($action) {
     	$listeplugin = $manager->get_enrolment_instances();
     	foreach ($listeplugin as &$plugin_name) {
     		if($plugin_name->enrol == 'cohort') {
+			if($plugin_name->name == '')
+    			{
+    				$plugin_name->name = $inames[$plugin_name->id];
+    			}
     			$usersfiltre[$plugin_name->id] = $plugin_name;
     		}
     	}
