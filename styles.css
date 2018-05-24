@@ -1,0 +1,127 @@
+.modal .simplesco label {
+    min-width: 220px;
+    text-align : left;
+}
+
+.modal .simplesco .text-center{
+    width : 100%;
+}
+
+
+.modal .simplesco .search-control{
+    text-align : left;
+}
+
+.modal .simplesco select, .modal .simplesco input {
+    height: auto;
+    line-height: 25px;
+    padding: 1px 3px
+}
+
+.modal .simplesco input[type="radio"] {
+    margin-top: 0px;
+}
+
+.modal .simplesco #loading {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background-color: #FFF;
+    min-width: 50px;
+    min-height: 50px;
+    padding-top: 125px;
+    text-align: center
+}
+
+.modal .simplesco .collapsible {
+    width : 100%;
+}
+.modal .simplesco .collapsible legend.ftoggler {
+    font-size: 1rem;
+}
+
+.modal .simplesco .collapsible legend.ftoggler a {
+    margin: 0 !important
+}
+
+.modal .simplesco .btn {
+    margin: 5px 0;
+    padding: 3px 10px;
+}
+
+.modal .simplesco #results {
+    border: 1px solid #BBB;
+    margin-top : 10px;
+    max-height : 350px;
+    overflow : auto;
+    width: 100%;
+}
+
+.modal .simplesco #results .total_results {
+    background-color: #eee;
+    padding: 5px;
+    border-bottom: 1px solid #BBB;
+    font-size: .9rem;
+    font-weight: bold;
+}
+
+.modal .simplesco #results .item {
+    width: 100%;
+    text-align: left;
+    font-size: 9pt;
+    border-bottom: 1px solid #ddd;
+    border-top: 1px solid #eee;
+}
+
+.modal .simplesco #results .item:nth-child(2n) {
+    border-bottom: 1px solid #ddd;
+    border-top: 1px solid #eee;
+    background-color: #f9f9f9;
+}
+
+.modal .simplesco #results .item .count {
+    width: 20px;
+    float: left;
+    font-size: 7pt;
+    line-height: 41px;
+    border-right: 1px solid #ddd;
+    background-color: #EEE;
+    text-align: right;
+    padding: 2px;
+}
+
+.modal .simplesco #results .item.enrolled .count {
+    width: 40px;
+    color: #eee;
+}
+
+.modal .simplesco #results .item .details {
+    width: 250px;
+    width: 50%;
+    float: left;
+    margin: 3px;
+}
+
+.modal .simplesco #results .item .options {
+    padding-right: 7px;
+    font-size: 8pt;
+    margin: 3px;
+}
+
+.modal .simplesco #results .item .options .btn {
+    margin: 3px;
+    float: right;
+    cursor: pointer;
+}
+
+.modal .simplesco #results .user .picture {
+    width: 45px;
+    float: left;
+    margin: 3px;
+}
+
+.modal .simplesco #results .cohort .details {
+    line-height: 41px;
+}

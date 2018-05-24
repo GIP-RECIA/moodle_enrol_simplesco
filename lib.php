@@ -218,7 +218,7 @@ class enrol_simplesco_plugin extends enrol_plugin {
      * @return enrol_user_button
      */
     public function get_manual_enrol_button(course_enrolment_manager $manager) {
-        global $CFG;
+        global $CFG, $PAGE;
         require_once($CFG->dirroot.'/cohort/lib.php');
 
         $instance = null;
@@ -238,148 +238,31 @@ class enrol_simplesco_plugin extends enrol_plugin {
         $buttons = array();
         $simplescourl = new moodle_url('#', array('id' => $instance->courseid));
 
-        $button1 = new enrol_user_button($simplescourl, get_string('enrolusers', 'enrol_simplesco'), 'get');
-        $button1->class .= ' enrol_simplesco_plugin';
+        $button = new enrol_user_button($simplescourl, get_string('enrolusers', 'enrol_simplesco'), 'get');
+        $button->class .= ' enrol_simplesco_plugin enrol';
+        $buttons["enrolusers"] = $button;
 
-        $startdate = $manager->get_course()->startdate;
-        $startdateoptions = array();
+        $button = new enrol_user_button($simplescourl, get_string('unenrolusers', 'enrol_simplesco'), 'get');
+        $button->class .= ' enrol_simplesco_plugin unenrol';
+        $buttons["unenrolusers"] = $button;
+
         $timeformat = get_string('strftimedatefullshort');
-        if ($startdate > 0) {
-            $startdateoptions[2] = get_string('coursestart') . ' (' . userdate($startdate, $timeformat) . ')';
-        }
+
+        $arguments = array('course_id' => $instance->courseid, 'start_dates' => array(), "instance" => $instance);
+
         $today = time();
         $today = make_timestamp(date('Y', $today), date('m', $today), date('d', $today), 0, 0, 0);
-        $startdateoptions[3] = get_string('today') . ' (' . userdate($today, $timeformat) . ')' ;
-        $defaultduration = $instance->enrolperiod > 0 ? $instance->enrolperiod / 86400 : '';
-
-        $modules2 = array('moodle-enrol_simplesco-quickenrolment', 'moodle-enrol_simplesco-quickenrolment-skin');
-        $modules1 = array('moodle-enrol_simplesco-choiseenrolment', 'moodle-enrol_simplesco-choiseenrolment-skin');
-        $modules3 = array('moodle-enrol_simplesco-cohortenrolment', 'moodle-enrol_simplesco-cohortenrolment-skin');
-        $modules4 = array('moodle-enrol_simplesco-quickunenrolment', 'moodle-enrol_simplesco-quickunenrolment-skin');
-        //$modules2 = array('','');
-        $arguments1 = array(
-        		'instances'           => $instances,
-        		'courseid'            => $instance->courseid,
-        		'url'                 => $manager->get_moodlepage()->url->out(false),
-        );
-        $arguments2 = array(
-            'instances'           => $instances,
-            'courseid'            => $instance->courseid,
-            'ajaxurl'             => '/enrol/simplesco/ajax.php',
-            'url'                 => $manager->get_moodlepage()->url->out(false),
-            'optionsStartDate'    => $startdateoptions,
-            'defaultRole'         => $instance->roleid,
-            'defaultDuration'     => $defaultduration,
-            'disableGradeHistory' => $CFG->disablegradehistory,
-            'recoverGradesDefault'=> '',
-            //'cohortsAvailable'    => cohort_get_available_cohorts($manager->get_context(), COHORT_WITH_NOTENROLLED_MEMBERS_ONLY, 0, 1) ? true : false
-        	'cohortsAvailable'    => false
-        );
-        $arguments3 = array(
-        		'instances'           => $instances,
-        		'courseid'            => $instance->courseid,
-        		'ajaxurl'             => '/enrol/simplesco/ajax.php',
-        		'url'                 => $manager->get_moodlepage()->url->out(false),
-        		'optionsStartDate'    => $startdateoptions,
-        		'defaultRole'         => $instance->roleid,
-        		'defaultDuration'     => $defaultduration,
-        		'disableGradeHistory' => $CFG->disablegradehistory,
-        		'recoverGradesDefault'=> '',
-        		//'cohortsAvailable'    => cohort_get_available_cohorts($manager->get_context(), COHORT_WITH_NOTENROLLED_MEMBERS_ONLY, 0, 1) ? true : false
-        		'cohortsAvailable'    => false
-        );
-        $arguments4 = array(
-        		'instances'           => $instances,
-        		'courseid'            => $instance->courseid,
-        		'ajaxurl'             => '/enrol/simplesco/ajax.php',
-        		'url'                 => $manager->get_moodlepage()->url->out(false),
-        		'optionsStartDate'    => $startdateoptions,
-        		'defaultRole'         => $instance->roleid,
-        		'defaultDuration'     => $defaultduration,
-        		'disableGradeHistory' => $CFG->disablegradehistory,
-        		'recoverGradesDefault'=> '',
-        		//'cohortsAvailable'    => cohort_get_available_cohorts($manager->get_context(), COHORT_WITH_NOTENROLLED_MEMBERS_ONLY, 0, 1) ? true : false
-        		'cohortsAvailable'    => true
-        );
-
-        if ($CFG->recovergradesdefault) {
-            $arguments1['recoverGradesDefault'] = ' checked="checked"';
+        $arguments["start_dates"][] = get_string('today') . ' (' . userdate($today, $timeformat) . ')' ;
+        $startdate = $manager->get_course()->startdate;
+        if ($startdate > 0) {
+            $arguments["start_dates"][] = get_string('coursestart') . ' (' . userdate($startdate, $timeformat) . ')';
         }
 
-        $function2 = 'M.enrol_simplesco.quickenrolment.init';
-        $function1 = 'M.enrol_simplesco.choiseenrolment.init';
-        $function3 = 'M.enrol_simplesco.cohortenrolment.init';
-        $function4 = 'M.enrol_simplesco.quickunenrolment.init';
-        $button1->require_yui_module($modules1, $function1, array($arguments1));
-        $string_enrol = array(
-            'ajaxoneuserfound',
-            'ajaxxusersfound',
-            'ajaxnext25',
-            'enrol',
-            'enrolmentoptions',
-            'enrolusers',
-            'errajaxfailedenrol',
-            'errajaxsearch',
-            'none',
-            'usersearch',
-            'unlimitedduration',
-            'startdatetoday',
-            'durationdays',
-            'enrolperiod',
-            'finishenrollingusers',
-            'recovergrades');
-        $button1->strings_for_js($string_enrol, 'enrol');
-        $string_simplesco = array(
-        	'browseusers', 
-        	'browsecohorts', 
-        	'searchoption', 
-        	'enrolusers', 
-        	'fitre1name',
-        	'fitre2name',
-        	'fitre3name',
-        	'fitre4name',
-        	'fitre5name',
-        	'fitre6name',
-        	'fitre6namecohort',
-        	'choisetitle', 
-        	'btnenroluser', 
-        	'btnenrolcohort',
-        	'frommyclass',
-        	'fromnetocentre',
-        	'byname',
-        	'enrolcohorttitle',
-        	'ajaxonecohortfound',
-        	'ajaxxcohortfound',
-        	'cohort',
-        	'btnclosecohort',
-        	'noresultliste',
-        	'allresultliste'
-        );
-        $button1->strings_for_js($string_simplesco, 'enrol_simplesco');
-        $button1->strings_for_js('addgroup','enrol_cohort');
-        $button1->strings_for_js('assignroles', 'role');
-        $button1->strings_for_js('startingfrom', 'moodle');
+        $PAGE->requires->js_call_amd('enrol_simplesco/choiceenrolment', 'init', array($arguments));
+        $PAGE->requires->js_call_amd('enrol_simplesco/userenrolment', 'init', array($arguments));
+        $PAGE->requires->js_call_amd('enrol_simplesco/cohortenrolment', 'init', array($arguments));
+        $PAGE->requires->js_call_amd('enrol_simplesco/unenrolment', 'init', array($arguments));
 
-        $buttons['B1'] = $button1;
-        
-        
-        $button2 = new enrol_user_button($simplescourl, get_string('unenrolusers', 'enrol_simplesco'), 'get');
-        $button2->class .= ' enrol_simplesco_plugin';
-        $button2->require_yui_module($modules4, $function4, array($arguments4));
-        $string_simplesco2 = array(
-        	'unenroltitle',
-        	'unenrolusers',
-        	'ajaxonecohortfound',
-        	'ajaxxcohortfound',
-        	'unenrolusers',
-        	'btnclose',
-        	'btnunenrolall'
-        );
-        $button2->strings_for_js($string_simplesco2, 'enrol_simplesco');
-        $button1->require_yui_module($modules2, $function2, array($arguments2));
-        $button1->require_yui_module($modules3, $function3, array($arguments3));
-        $buttons['B2'] = $button2;
-        
         return $buttons;
     }
 
