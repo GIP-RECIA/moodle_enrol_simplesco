@@ -12,6 +12,8 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+include_once $CFG->dirroot . "/enrol/ldap/settingslib.php";
+
 
 class admin_setting_simplesco_rolemapping extends admin_setting {
 
