@@ -36,6 +36,7 @@ define(['core/templates',
             this.course_id = options.course_id;
             this.instance = options.instance;
             this.start_dates = options.start_dates;
+            this.role_default = options.role_default;
             this.init();
         };
 
@@ -47,7 +48,9 @@ define(['core/templates',
         ESCOUserEnrolment.prototype.perpage = 25;
         /** @var {number} courseid - */
         ESCOUserEnrolment.prototype.course_id = 0;
-        /** @var {boolean} enrol_count - */
+        /** @var {number} courseid - */
+        ESCOUserEnrolment.prototype.role_default = 0;
+        /** @var {number} enrol_count - */
         ESCOUserEnrolment.prototype.enrol_count = 0;
         /** @var {array} assignales_roles - */
         ESCOUserEnrolment.prototype.assignales_roles = [];
@@ -116,7 +119,7 @@ define(['core/templates',
                 body += '</div>';
                 body += '</fieldset>';
 
-                body += '<fieldset class="collapsible collapsed" id="enrolment_options">';
+                body += '<fieldset class="collapsible" id="enrolment_options">';
                 body += '<legend class="ftoggler"><a href="#" class="fheader" role="button" aria-controls="enrolment_options" aria-expanded="false">' + strings[8] + '</a></legend>';
                 body += '<div class="fcontainer">';
                 body += '<div class="radio"><label><input type="radio" id="enrol_simplesco_typesearch_classe" name="enrol_simplesco_typesearch" value="classe" checked="checked"/>' + strings[9] + '</label></div>';
@@ -131,7 +134,7 @@ define(['core/templates',
                 body += '<div class="form-group"><label for="enrol_simplesco_liste5">' + strings[16] + ' :</label><select id="enrol_simplesco_liste5" name="code5" style="max-width: 300px; width:100%;"></select></div>'
                 body += '</div>';
                 body += '<div id="enrol_simplesco_input form-group">';
-                body += '<label for="enrolusersearch">' + strings[17] + ' :</label> <input type="text" id="enrolusersearch" value="" class="form-control"/>';
+                body += '<label for="enrolusersearch">' + strings[17] + ' :</label> <input type="text" id="enrolusersearch" value="" class="form-control" style="max-width: 300px; width:100%;"/>';
                 body += '</div>';
                 body += '</div>';
                 body += '</fieldset>';
@@ -480,7 +483,8 @@ define(['core/templates',
         ESCOUserEnrolment.prototype.updateRolesList = function () {
             var select = this.modal.getBody().find(SELECTORS.FIELD_ROLES);
             for (var i in this.assignales_roles) {
-                $(select).append('<option value="' + this.assignales_roles[i].id + '">' + this.assignales_roles[i].name + '</option>');
+                var selected = (this.role_default == this.assignales_roles[i].id) ? 'selected="selected"' : "";
+                $(select).append('<option value="' + this.assignales_roles[i].id + '" '+ selected + '>' + this.assignales_roles[i].name + '</option>');
             }
         };
 

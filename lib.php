@@ -248,7 +248,7 @@ class enrol_simplesco_plugin extends enrol_plugin {
 
         $timeformat = get_string('strftimedatefullshort');
 
-        $arguments = array('course_id' => $instance->courseid, 'start_dates' => array(), "instance" => $instance);
+        $arguments = array('course_id' => $instance->courseid, 'start_dates' => array(), "instance" => $instance, 'role_default' => 5);
 
         $today = time();
         $today = make_timestamp(date('Y', $today), date('m', $today), date('d', $today), 0, 0, 0);

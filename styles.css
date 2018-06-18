@@ -97,8 +97,11 @@
     color: #eee;
 }
 
+.modal .simplesco #results .item.enrolled button {
+    display : none;
+}
+
 .modal .simplesco #results .item .details {
-    width: 250px;
     width: 50%;
     float: left;
     margin: 3px;
@@ -124,4 +127,13 @@
 
 .modal .simplesco #results .cohort .details {
     line-height: 41px;
+}
+
+.modal .simplesco label{
+    justify-content: left;
+    align-items: left;
+    display : inline-block;
+}
+.modal .simplesco input{
+    margin-left : .4rem;
 }

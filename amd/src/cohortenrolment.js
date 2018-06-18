@@ -35,6 +35,7 @@ define(['core/templates',
             this.course_id = options.course_id;
             this.instance = options.instance;
             this.start_dates = options.start_dates;
+            this.role_default = options.role_default;
             this.init();
         };
 
@@ -46,6 +47,8 @@ define(['core/templates',
         ESCOCohortEnrolment.prototype.perpage = 25;
         /** @var {number} courseid - */
         ESCOCohortEnrolment.prototype.course_id = 0;
+        /** @var {number} courseid - */
+        ESCOCohortEnrolment.prototype.role_default = 0;
         /** @var {boolean} enrol_count - */
         ESCOCohortEnrolment.prototype.enrol_count = 0;
         /** @var {array} assignales_roles - */
@@ -357,7 +360,8 @@ define(['core/templates',
         ESCOCohortEnrolment.prototype.updateRolesList = function () {
             var select = this.modal.getBody().find(SELECTORS.FIELD_ROLES);
             for (var i in this.assignales_roles) {
-                $(select).append('<option value="' + this.assignales_roles[i].id + '">' + this.assignales_roles[i].name + '</option>');
+                var selected = (this.role_default == this.assignales_roles[i].id) ? 'selected="selected"' : "";
+                $(select).append('<option value="' + this.assignales_roles[i].id + '" '+ selected + '>' + this.assignales_roles[i].name + '</option>');
             }
         };
 
