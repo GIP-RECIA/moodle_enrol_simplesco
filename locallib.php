@@ -205,7 +205,7 @@ class enrol_simpleldap_ldapsearch {
 			case 4 : return $this->matchLDAPVAlues4($listFilter,$userValues);
 		}
 	
-		return $listTmp;
+		return array();
 	}
 	
 	public function matchLDAPVAlues1($listTmp, $userValues){
@@ -708,7 +708,7 @@ function enrol_simplesco_get_potential_cohorts($context, $enrolid, $search = '',
     $cohorts = array();
     $cnt = 0;
     foreach ($allcohorts as $c) {
-        if ($cnt >= $page * $perpage && (!$perpage || $cnt < ($page+1)*$perpage)) {
+        if ($cnt >= $page * $perpage && (!$perpage || $cnt < ($page+1)*$perpage) && $c->contextid != 1) {
             $cohorts[] = (object)array(
                 'id' => $c->id,
                 'name' => format_string($c->name, true, array('context' => $c->contextid)),

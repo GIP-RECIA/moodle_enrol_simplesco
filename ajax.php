@@ -154,16 +154,16 @@ function addFilterFromSiren($list, $num, $siren ){
 }
 	
 
-if ($roleid < 0) {
-	$roleid = $instance->roleid;
-}
-$roles = get_assignable_roles($context);
-$roles = array('0'=>get_string('none')) + $roles;
-
-if (!isset($roles[$roleid])) {
-	// weird - security always first!
-	$roleid = 0;
-}
+//if ($roleid < 0) {
+//	$roleid = $instance->roleid;
+//}
+//$roles = get_assignable_roles($context);
+//$roles = array('0'=>get_string('none')) + $roles;
+//
+//if (!isset($roles[$roleid])) {
+//	// weird - security always first!
+//	$roleid = 0;
+//}
 
 //$instancename = $enrol_simplesco->get_instance_name($instance);
 

@@ -142,9 +142,6 @@ define(['core/templates',
             }.bind(this)).fail(Notification.exception);
 
             var context = this;
-            $("body").on("click", SELECTORS.BUTTON_TRIGGER, function () {
-                context.modal.show();
-            });
         };
 
         /**
@@ -154,6 +151,7 @@ define(['core/templates',
             var context = this;
             $("body").on("click", SELECTORS.BUTTON_TRIGGER, function () {
                 context.modal.show();
+                context.modal.getBody().find(SELECTORS.BUTTON_SEARCH).trigger("click");
             });
             this.modal.getBody().find(SELECTORS.BUTTON_COLLAPSE).on("click", function (event) {
                 event.preventDefault();
@@ -264,7 +262,7 @@ define(['core/templates',
             var count = this.modal.getBody().find(SELECTORS.AREA_RESULTS).find(".cohort").length;
             var cohort_html = '<div class="cohort item clearfix" rel="' + cohort.id + '">';
 
-            cohort_html += '<div class="count">' + (count + 1) + '</div>';
+            cohort_html += '<div class="count">' + (count) + '</div>';
 
             cohort_html += '<div class="details">';
             cohort_html += '<div class="fullname">' + cohort.name + '</div>';
@@ -328,9 +326,10 @@ define(['core/templates',
                         context.modal.getBody().find(SELECTORS.AREA_RESULTS).append(context.renderCohort(cohort));
                     }
                     var count = context.modal.getBody().find(SELECTORS.AREA_RESULTS).find(".item").length;
-                    if (count < result.response.totalusers) {
+                    if (count < result.response.totalcohorts) {
                         context.modal.getBody().find(SELECTORS.AREA_RESULTS).append('<div class="text-center"><button class="btn btn-secondary" data-toggle="load-more">' + context.strings[13] + '</button></div>');
                     }
+                    console.log(result.response.totalcohorts);
                 },
                 error: function (resultat, statut, erreur) {
                     Notification.exception(erreur);
