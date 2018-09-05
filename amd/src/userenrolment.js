@@ -136,10 +136,9 @@ define(['core/templates',
                 body += '<div id="enrol_simplesco_input form-group">';
                 body += '<label for="enrolusersearch">' + strings[17] + ' :</label> <input type="text" id="enrolusersearch" value="" class="form-control" style="max-width: 300px; width:100%;"/>';
                 body += '</div>';
+                body += '<div class="text-center"><button class="btn btn-primary" id="search"> ' + strings[18] + '</button></div>';
                 body += '</div>';
                 body += '</fieldset>';
-
-                body += '<div class="text-center"><button class="btn btn-primary" id="search"> ' + strings[18] + '</button></div>';
 
                 body += '<div id="results"></div>';
 

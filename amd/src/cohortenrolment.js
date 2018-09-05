@@ -111,14 +111,13 @@ define(['core/templates',
                 body += '</div>';
                 body += '</fieldset>';
 
-                body += '<fieldset class="collapsible collapsed" id="enrolment_options">';
+                body += '<fieldset class="collapsible collapsed" id="enrolment_searchs">';
                 body += '<legend class="ftoggler"><a href="#" class="fheader" role="button" aria-controls="enrolment_options" aria-expanded="false">' + strings[8] + '</a></legend>';
                 body += '<div class="fcontainer">';
                 body += '<label for="enrolusersearch">' + strings[9] + ' :</label> <input type="text" id="enrolusersearch" value="" class="form-control"/>';
+                body += '<div class="text-center"><button class="btn btn-primary" id="search"> ' + strings[9] + '</button></div>';
                 body += '</div>';
                 body += '</fieldset>';
-
-                body += '<div class="text-center"><button class="btn btn-primary" id="search"> ' + strings[9] + '</button></div>';
 
                 body += '<div id="results"></div>';
 
@@ -325,11 +324,10 @@ define(['core/templates',
                         var cohort = result.response.cohorts[line];
                         context.modal.getBody().find(SELECTORS.AREA_RESULTS).append(context.renderCohort(cohort));
                     }
-                    var count = context.modal.getBody().find(SELECTORS.AREA_RESULTS).find(".item").length;
+                    var count = (context.modal.getBody().find(SELECTORS.AREA_RESULTS).find(".item").length - 1);
                     if (count < result.response.totalcohorts) {
                         context.modal.getBody().find(SELECTORS.AREA_RESULTS).append('<div class="text-center"><button class="btn btn-secondary" data-toggle="load-more">' + context.strings[13] + '</button></div>');
                     }
-                    console.log(result.response.totalcohorts);
                 },
                 error: function (resultat, statut, erreur) {
                     Notification.exception(erreur);
