@@ -704,11 +704,11 @@ function enrol_simplesco_get_potential_cohorts($context, $enrolid, $search = '',
     require_once($CFG->dirroot . '/cohort/lib.php');
 
     $allcohorts = cohort_get_available_cohorts($context, COHORT_WITH_NOTENROLLED_MEMBERS_ONLY, 0, 0, $search);
-    $totalcohorts = count($allcohorts);
     $cohorts = array();
     $cnt = 0;
     foreach ($allcohorts as $c) {
-        if ($cnt >= $page * $perpage && (!$perpage || $cnt < ($page+1)*$perpage) && $c->contextid != 1) {
+        if($c->contextid == 1) continue;
+        if ($cnt >= $page * $perpage && (!$perpage || $cnt < ($page+1)*$perpage)) {
             $cohorts[] = (object)array(
                 'id' => $c->id,
                 'name' => format_string($c->name, true, array('context' => $c->contextid)),
@@ -717,7 +717,7 @@ function enrol_simplesco_get_potential_cohorts($context, $enrolid, $search = '',
         }
         $cnt++;
     }
-    return array('totalcohorts' => $totalcohorts, 'cohorts' => $cohorts);
+    return array('totalcohorts' => $cnt, 'cohorts' => $cohorts);
 }
 
 /**
