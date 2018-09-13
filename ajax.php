@@ -184,6 +184,7 @@ switch ($action) {
     	//Get the default values for the user
     	$username = $USER->username;
     	$attributes = array();
+        $nb_filter = 5;
     	for ($i = 1; $i <= $nb_filter ; $i++){
     		array_push($attributes, $enrol_simplesco->getConfig('filter'.$i.'_default'));
     	}
