@@ -370,11 +370,17 @@ switch ($action) {
     case 'searchcohortsenrol':
     	//$users = $manager->get_users('lastname', 'ASC', 0, 200);
     	$listeplugin = $manager->get_enrolment_instances();
+    	$instances = enrol_get_instances($course->id, true);
     	foreach ($listeplugin as &$plugin_name) {
     		if($plugin_name->enrol == 'cohort') {
 			if($plugin_name->name == '')
     			{
-    				$plugin_name->name = $inames[$plugin_name->id];
+    			    $cohort = $DB->get_record('cohort', array('id' => $plugin_name->customint1), 'name');
+    			    if($cohort === false){
+                        $plugin_name->name = $inames[$plugin_name->id];
+                    }else{
+                        $plugin_name->name = $cohort->name;
+                    }
     			}
     			$usersfiltre[$plugin_name->id] = $plugin_name;
     		}
