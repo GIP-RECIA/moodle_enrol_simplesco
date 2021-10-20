@@ -6,7 +6,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-define(['core/templates',
+define('userenrolment',
+    ['core/templates',
         'jquery',
         'core/str',
         'core/config',

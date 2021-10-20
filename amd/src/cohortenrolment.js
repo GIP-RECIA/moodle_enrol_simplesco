@@ -5,7 +5,8 @@
  * @copyright  2016 Damyon Wiese <damyon@moodle.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-define(['core/templates',
+define('cohortenrolment',
+    ['core/templates',
         'jquery',
         'core/str',
         'core/config',
