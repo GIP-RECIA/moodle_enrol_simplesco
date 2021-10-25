@@ -83,86 +83,84 @@ require_capability('enrol/simplesco:enrol', $context);
 require_capability('enrol/simplesco:unenrol', $context);
 
 function post_process1($liste){
-	return $liste;
+    return $liste;
 }
 function post_process2($liste){
-	return $liste;
+    return $liste;
 }
 function post_process3($liste){
+    $listCorrigee = array();
+    foreach ($liste as $key=>$value) {
+        $index = strrpos($value, '$', -1) +1;
+        $listCorrigee[$key] = substr ( $value , $index) ;
+    }
 
-	$listCorrigee = array();
-	foreach ($liste as $key=>$value) {
-		$index = strrpos($value, '$', -1) +1;
-		$listCorrigee[$key] = substr ( $value , $index) ;
-	}
-
-	return $listCorrigee;
+    return $listCorrigee;
 }
 function post_process4($liste){
-	return post_process3($liste);
+    return post_process3($liste);
 }
 function post_process5($liste){
-	$listCorrigee = array();
-	foreach ($liste as $key=>$value) {
-		$valueCorrigee = $value;
-		for($j = 0; $j < 3; $j++ ) {
-			$index = strpos($valueCorrigee, ':') + 1;
-			$valueCorrigee = substr ( $valueCorrigee , $index) ;
-		}
-		$valueIndesirable1 = preg_match( '/^Parents/', $valueCorrigee );
-		$valueIndesirable2 = preg_match( '/^Groupes_Parents/', $valueCorrigee );
+    $listCorrigee = array();
+    foreach ($liste as $key=>$value) {
+        $valueCorrigee = $value;
+        for($j = 0; $j < 3; $j++ ) {
+            $index = strpos($valueCorrigee, ':') + 1;
+            $valueCorrigee = substr ( $valueCorrigee , $index) ;
+        }
+        $valueIndesirable1 = preg_match( '/^Parents/', $valueCorrigee );
+        $valueIndesirable2 = preg_match( '/^Groupes_Parents/', $valueCorrigee );
 
-		if( !$valueIndesirable1 && !$valueIndesirable2 ) {
-			$listCorrigee[$key] = $valueCorrigee;
-		}
+        if( !$valueIndesirable1 && !$valueIndesirable2 ) {
+            $listCorrigee[$key] = $valueCorrigee;
+        }
 
-	}
-	return $listCorrigee;
+    }
+    return $listCorrigee;
 }
 
 function pre_process1($filtre){
-	return $filtre;
+    return $filtre;
 }
 function pre_process2($filtre){
-	return $filtre;
+    return $filtre;
 }
 function pre_process3($filtre){
-	return $filtre;
+    return $filtre;
 }
 
 function pre_process4($filtre){
-	return $filtre;
+    return $filtre;
 }
 function pre_process5($filtre){
-	return $filtre;
+    return $filtre;
 }
 function addFilterFromSiren($list, $num, $siren ){
-        //error_log("Sended : ".print_r($list[$num], true)." Siren ".$siren, 3 , "/tmp/myenrolfuction.log");
-        if ($num > 2){
-                $ret = array();
-                foreach ($list[$num] as $key => $elmt){
-                      //  error_log("THE ELEMENT : ".$elmt, 3, "/tmp/myenrolfunction.log");
-                                if (strpos($elmt, $siren) !== false){
-                                $ret[$key] = $elmt;
-                                }
-                }
-                return $ret;
-        }else{
-                return $list[$num];
+    //error_log("Sended : ".print_r($list[$num], true)." Siren ".$siren, 3 , "/tmp/myenrolfuction.log");
+    if ($num > 2){
+        $ret = array();
+        foreach ($list[$num] as $key => $elmt){
+            //  error_log("THE ELEMENT : ".$elmt, 3, "/tmp/myenrolfunction.log");
+            if (strpos($elmt, $siren) !== false){
+                $ret[$key] = $elmt;
+            }
         }
-        
+        return $ret;
+    }else{
+        return $list[$num];
+    }
 }
-	
+    
 
 //if ($roleid < 0) {
-//	$roleid = $instance->roleid;
+//    $roleid = $instance->roleid;
 //}
 //$roles = get_assignable_roles($context);
 //$roles = array('0'=>get_string('none')) + $roles;
 //
 //if (!isset($roles[$roleid])) {
-//	// weird - security always first!
-//	$roleid = 0;
+//    // weird - security always first!
+//    $roleid = 0;
 //}
 
 //$instancename = $enrol_simplesco->get_instance_name($instance);
@@ -173,93 +171,92 @@ switch ($action) {
         $outcome->response = array_reverse($manager->get_assignable_roles($otheruserroles), true);        
         break;
     case 'getListes':
-    	$return = array();
-    	
-    	if (!$enrol_simplesco = enrol_get_plugin('simplesco')) {
-    		throw new coding_exception('Can not instantiate enrol_simpleldap');
-    	}
-    	$ldapconn = new ldapconn($enrol_simplesco);
-    	$ldapselector = new enrol_simpleldap_ldapsearch($enrol_simplesco,$ldapconn);
-    	
-    	//Get the default values for the user
-    	$username = $USER->username;
-    	$attributes = array();
+        $return = array();
+        
+        if (!$enrol_simplesco = enrol_get_plugin('simplesco')) {
+            throw new coding_exception('Can not instantiate enrol_simpleldap');
+        }
+        $ldapconn = new ldapconn($enrol_simplesco);
+        $ldapselector = new enrol_simpleldap_ldapsearch($enrol_simplesco,$ldapconn);
+        
+        //Get the default values for the user
+        $username = $USER->username;
+        $attributes = array();
         $nb_filter = 5;
-    	for ($i = 1; $i <= $nb_filter ; $i++){
-    		array_push($attributes, $enrol_simplesco->getConfig('filter'.$i.'_default'));
-    	}
-    	array_push($attributes, "escouai");
-    	array_push($attributes, "entauxensclasses");
-    	array_push($attributes, "entauxensgroupes");
-    	array_push($attributes, "escouaicourant");
-    	
-    	//$userValues = $ldapselector->get_userAttribute($username,$attributes);
-    	$userValues = $ldapselector->get_userAttributeMultiple($username,$attributes);
-    	
-    	//Create the lists to be shown before the enrol_simpleldap_potential_participant.
-    	
-    	$list = array();
-    	
-    	for ($i = 0; $i < strlen($numliste); $i++) {
-    		$num=$numliste{$i};
-    		
-    		$attrbValue = 'filter'.$num.'_list_filter';
-    		$ldapFilter = $enrol_simplesco->getConfig($attrbValue);
-    		for ($j = 1; $j <= $num ; $j++){
-    			$nomvar = 'code'.$j;
-    			if ($$nomvar != ''){
-    				$ldapFilter = str_replace("{CODE".$j."}", $$nomvar, $ldapFilter);
-    			}
-    		}
-    		$nomFonction = 'pre_process'.$num;
-    		$ldapFilter = call_user_func($nomFonction, $ldapFilter);
-    		$list[$num] = $ldapselector->get_listFilter($num,$ldapFilter);
-    		
-    		//Mes classes
-    		if ($option=='classe') {
-		//	error_log(" \n LISTE NUM BEF0RE MATCH LDAP VALUES :  ".$num." ::::::> ".print_r($list, true), 3 ,"/tmp/testEnrolClasse.log");
-    			$list[$num]  = $ldapselector->matchLDAPValues($list[$num], $userValues, $num);
-		//	error_log("\n LISTE NUM AFTER MATCH LDAP VALUES :  ".$num." ::::::> ".print_r($list, true), 3 ,"/tmp/testEnrolClasse.log");
-			if (isset($_REQUEST['code1']) && $_REQUEST['code1'] !== ""){
-				$siren = $ldapselector->getSirenFromUAI($code1);
-				$list[$num] = addFilterFromSiren($list, $num, $siren);
-			}
-    		}
-    		
-    		
-    		//Post traitement sur les résultat provenant du LDAP.
-    		$nomFonction = 'post_process'.$num;
-    			
-    		$myListe  = call_user_func($nomFonction, $list[$num]);
-    		asort($myListe);
-    		$list[$num] = $myListe;
-    			
-    		$nomvar = 'code'.$num;
-    			
-    		if (count($list[$num]) == 0 ){
-    			$$nomvar = null;
-    		}
-    			
-    		//If there is no value for this code, we will choose one.
-    		if ($$nomvar == null || $$nomvar == ''){
-    		
-    			if ($enrol_simplesco->getConfig('filter'.$num.'_mandatory') && $$nomvar == ''){
-    				$$nomvar = array_shift(array_keys($list[$num]));
-    			}
-    			$defaultValue = '';
-    			$defaultAttr = $enrol_simplesco->getConfig('filter'.$num.'_default');
-    			if ($defaultAttr != null) {
-    				$defaultValue = $userValues[$defaultAttr][0];
-    			}
-    		} else {
-    			$defaultValue = $$nomvar;
-    		}
+        for ($i = 1; $i <= $nb_filter ; $i++){
+            array_push($attributes, $enrol_simplesco->getConfig('filter'.$i.'_default'));
+        }
+        array_push($attributes, "escouai");
+        array_push($attributes, "entauxensclasses");
+        array_push($attributes, "entauxensgroupes");
+        array_push($attributes, "escouaicourant");
+        
+        //$userValues = $ldapselector->get_userAttribute($username,$attributes);
+        $userValues = $ldapselector->get_userAttributeMultiple($username,$attributes);
+        
+        //Create the lists to be shown before the enrol_simpleldap_potential_participant.
+        
+        $list = array();
+        
+        for ($i = 0; $i < strlen($numliste); $i++) {
+            $num=$numliste{$i};
+            
+            $attrbValue = 'filter'.$num.'_list_filter';
+            $ldapFilter = $enrol_simplesco->getConfig($attrbValue);
+            for ($j = 1; $j <= $num ; $j++){
+                $nomvar = 'code'.$j;
+                if ($$nomvar != ''){
+                    $ldapFilter = str_replace("{CODE".$j."}", $$nomvar, $ldapFilter);
+                }
+            }
+            $nomFonction = 'pre_process'.$num;
+            $ldapFilter = call_user_func($nomFonction, $ldapFilter);
+            $list[$num] = $ldapselector->get_listFilter($num,$ldapFilter);
+            
+            //Mes classes
+            if ($option=='classe') {
+            //    error_log(" \n LISTE NUM BEF0RE MATCH LDAP VALUES :  ".$num." ::::::> ".print_r($list, true), 3 ,"/tmp/testEnrolClasse.log");
+                $list[$num]  = $ldapselector->matchLDAPValues($list[$num], $userValues, $num);
+                //    error_log("\n LISTE NUM AFTER MATCH LDAP VALUES :  ".$num." ::::::> ".print_r($list, true), 3 ,"/tmp/testEnrolClasse.log");
+                if (isset($_REQUEST['code1']) && $_REQUEST['code1'] !== ""){
+                    $siren = $ldapselector->getSirenFromUAI($code1);
+                    $list[$num] = addFilterFromSiren($list, $num, $siren);
+                }
+            }
+            
+            //Post traitement sur les résultat provenant du LDAP.
+            $nomFonction = 'post_process'.$num;
+            
+            $myListe  = call_user_func($nomFonction, $list[$num]);
+            asort($myListe);
+            $list[$num] = $myListe;
+            
+            $nomvar = 'code'.$num;
+            
+            if (count($list[$num]) == 0 ){
+                $$nomvar = null;
+            }
+                
+            //If there is no value for this code, we will choose one.
+            if ($$nomvar == null || $$nomvar == ''){
+            
+                if ($enrol_simplesco->getConfig('filter'.$num.'_mandatory') && $$nomvar == ''){
+                    $$nomvar = array_shift(array_keys($list[$num]));
+                }
+                $defaultValue = '';
+                $defaultAttr = $enrol_simplesco->getConfig('filter'.$num.'_default');
+                if ($defaultAttr != null) {
+                    $defaultValue = $userValues[$defaultAttr][0];
+                }
+            } else {
+                $defaultValue = $$nomvar;
+            }
 
-    		$return[$num] = $list[$num];
-    		$return['defaut'.$num] = $defaultValue;
-    	}
-   		$outcome->response =$return;
-    	break;
+            $return[$num] = $list[$num];
+            $return['defaut'.$num] = $defaultValue;
+        }
+        $outcome->response =$return;
+        break;
     case 'searchusers':
         $enrolid = required_param('enrolid', PARAM_INT);
         $search = optional_param('search', '', PARAM_RAW);
@@ -267,28 +264,29 @@ switch ($action) {
         $addedenrollment = optional_param('enrolcount', 0, PARAM_INT);
         $perpage = optional_param('perpage', 25, PARAM_INT);  //  This value is hard-coded to 25 in quickenrolment.js
         if ($type!='ldap'){
-        	$reponse = $manager->get_potential_users($enrolid, $search, $searchanywhere, $page, $perpage, $addedenrollment);
+            $reponse = $manager->get_potential_users($enrolid, $search, $searchanywhere, $page, $perpage, $addedenrollment);
         } else {
-        	if (!$enrol_simplesco = enrol_get_plugin('simplesco')) {
-        		throw new coding_exception('Can not instantiate enrol_simpleldap');
-        	}
-        	$ldapconn = new ldapconn($enrol_simplesco);
-        	$options = array('enrolid' => $enrolid, 'code1' => $code1, 'code2' => $code2, 'code3' => $code3, 'code4' => $code4, 'code5' => $code5);
-        	$potentialuserselector = new enrol_simpleldap_potential_participant('addselect', $options, $enrol_simplesco, $ldapconn);
-        	$reponse = $potentialuserselector->display2($page, $perpage, $addedenrollment);
-        	
-        	
-        	//$outcome->response = $manager->get_potential_users($enrolid, $search, $searchanywhere, $page, $perpage, $addedenrollment);
+            if (!$enrol_simplesco = enrol_get_plugin('simplesco')) {
+                throw new coding_exception('Can not instantiate enrol_simpleldap');
+            }
+            $ldapconn = new ldapconn($enrol_simplesco);
+            $options = array('enrolid' => $enrolid, 'code1' => $code1, 'code2' => $code2, 'code3' => $code3, 'code4' => $code4, 'code5' => $code5);
+            $potentialuserselector = new enrol_simpleldap_potential_participant('addselect', $options, $enrol_simplesco, $ldapconn);
+            $reponse = $potentialuserselector->display2($page, $perpage, $addedenrollment);
+            
+            //$outcome->response = $manager->get_potential_users($enrolid, $search, $searchanywhere, $page, $perpage, $addedenrollment);
         }
         
         $extrafields = get_extra_user_fields($context);
         $useroptions = array();
+
         // User is not enrolled yet, either link to site profile or do not link at all.
         if (has_capability('moodle/user:viewdetails', context_system::instance())) {
             $useroptions['courseid'] = SITEID;
         } else {
             $useroptions['link'] = false;
         }
+
         foreach ($reponse['users'] as &$user) {
             $user->picture = $OUTPUT->user_picture($user, $useroptions);
             $user->fullname = fullname($user);
@@ -307,51 +305,50 @@ switch ($action) {
         $outcome->success = true;
         break;
     case 'searchusersenrol':
-    	$users = $manager->get_users('lastname', 'ASC', 0, 200);
-    	
-    	
-    	$extrafields = get_extra_user_fields($context);
-    	$useroptions = array();
-    	if (has_capability('moodle/user:viewdetails', context_system::instance())) {
-    		$useroptions['courseid'] = SITEID;
-    	} else {
-    		$useroptions['link'] = false;
-    	}
-    	
-    	foreach ($users as &$user) {
-    		$userenrolments = $manager->get_user_enrolments($user->id);
-    		foreach ($userenrolments as &$userenrolment) {
-    			$pluginname = '';
-    			$pluginname = get_class($userenrolment->enrolmentplugin);
-    			$myname = 'enrol_cohort_plugin';
-    			$comp = strcmp($pluginname,$myname);
-    			$useridconnect = $_SESSION['USER']->id;
-    			$useridliste = $user->id;
-    			if ($comp != 0) {
-    				if ($useridconnect != $useridliste || has_capability("enrol/simplesco:unenrolself", $context)) {
-    					$usersfiltre[$useridliste]=$user;
-    				}
-    			}
-    		}
-    	}
-    	
-    	foreach ($usersfiltre as &$user) {
-    		$user->picture = $OUTPUT->user_picture($user, $useroptions);
-    		$user->fullname = fullname($user);
-    		$fieldvalues = array();
-    		foreach ($extrafields as $field) {
-    			$fieldvalues[] = s($user->{$field});
-    			unset($user->{$field});
-    		}
-    		$user->extrafields = implode(', ', $fieldvalues);
-    	}
-    		
-    	$reponse['users']=array_values($usersfiltre);
-    	//$reponse['users'] = array_values($reponse['users']);
-    	$reponse['totalusers']=sizeof($usersfiltre);
-    	$outcome->response = $reponse;
-    	$outcome->success = true;
-    	break;
+        $users = $manager->get_users('lastname', 'ASC', 0, 200);
+        
+        $extrafields = get_extra_user_fields($context);
+        $useroptions = array();
+        if (has_capability('moodle/user:viewdetails', context_system::instance())) {
+            $useroptions['courseid'] = SITEID;
+        } else {
+            $useroptions['link'] = false;
+        }
+        
+        foreach ($users as &$user) {
+            $userenrolments = $manager->get_user_enrolments($user->id);
+            foreach ($userenrolments as &$userenrolment) {
+                $pluginname = '';
+                $pluginname = get_class($userenrolment->enrolmentplugin);
+                $myname = 'enrol_cohort_plugin';
+                $comp = strcmp($pluginname,$myname);
+                $useridconnect = $_SESSION['USER']->id;
+                $useridliste = $user->id;
+                if ($comp != 0) {
+                    if ($useridconnect != $useridliste || has_capability("enrol/simplesco:unenrolself", $context)) {
+                        $usersfiltre[$useridliste]=$user;
+                    }
+                }
+            }
+        }
+        
+        foreach ($usersfiltre as &$user) {
+            $user->picture = $OUTPUT->user_picture($user, $useroptions);
+            $user->fullname = fullname($user);
+            $fieldvalues = array();
+            foreach ($extrafields as $field) {
+                $fieldvalues[] = s($user->{$field});
+                unset($user->{$field});
+            }
+            $user->extrafields = implode(', ', $fieldvalues);
+        }
+            
+        $reponse['users']=array_values($usersfiltre);
+        //$reponse['users'] = array_values($reponse['users']);
+        $reponse['totalusers']=sizeof($usersfiltre);
+        $outcome->response = $reponse;
+        $outcome->success = true;
+        break;
     case 'searchcohorts':
         $enrolid = required_param('enrolid', PARAM_INT);
         $search = optional_param('search', '', PARAM_RAW);
@@ -361,35 +358,34 @@ switch ($action) {
         $reponse = enrol_simplesco_get_potential_cohorts($context, $enrolid, $search, $page, $perpage, $addedenrollment);
         $groups = array(0 => get_string('none'));
         foreach (groups_get_all_groups($course->id) as $group) {
-        	$groups[$group->id] = format_string($group->name, true, array('context'=>$coursecontext));
+            $groups[$group->id] = format_string($group->name, true, array('context'=>$coursecontext));
         }
         $reponse['group']=$groups;
         $outcome->response = $reponse;
         $outcome->success = true;
         break;
     case 'searchcohortsenrol':
-    	//$users = $manager->get_users('lastname', 'ASC', 0, 200);
-    	$listeplugin = $manager->get_enrolment_instances();
-    	$instances = enrol_get_instances($course->id, true);
-    	foreach ($listeplugin as &$plugin_name) {
-    		if($plugin_name->enrol == 'cohort') {
-			if($plugin_name->name == '')
-    			{
-    			    $cohort = $DB->get_record('cohort', array('id' => $plugin_name->customint1), 'name');
-    			    if($cohort === false){
+        //$users = $manager->get_users('lastname', 'ASC', 0, 200);
+        $listeplugin = $manager->get_enrolment_instances();
+        $instances = enrol_get_instances($course->id, true);
+        foreach ($listeplugin as &$plugin_name) {
+            if($plugin_name->enrol == 'cohort') {
+                if($plugin_name->name == '') {
+                    $cohort = $DB->get_record('cohort', array('id' => $plugin_name->customint1), 'name');
+                    if($cohort === false){
                         $plugin_name->name = $inames[$plugin_name->id];
                     }else{
                         $plugin_name->name = $cohort->name;
                     }
-    			}
-    			$usersfiltre[$plugin_name->id] = $plugin_name;
-    		}
-    	}
-    	$reponse['cohorts']=array_values($usersfiltre);
-    	$reponse['totalcohorts']=sizeof($usersfiltre);
-    	$outcome->response = $reponse;
-    	$outcome->success = true;
-    	break;
+                }
+                $usersfiltre[$plugin_name->id] = $plugin_name;
+            }
+        }
+        $reponse['cohorts']=array_values($usersfiltre);
+        $reponse['totalcohorts']=sizeof($usersfiltre);
+        $outcome->response = $reponse;
+        $outcome->success = true;
+        break;
     case 'enrol':
         $enrolid = required_param('enrolid', PARAM_INT);
         $cohort = $user = null;
@@ -424,6 +420,7 @@ switch ($action) {
                 $timestart = $today;
                 break;
         }
+
         if ($duration <= 0) {
             $timeend = 0;
         } else {
@@ -460,7 +457,7 @@ switch ($action) {
         
         $cohort = $DB->get_record('cohort', array('id' => $cohortid), '*', MUST_EXIST);
         if (!cohort_can_view_cohort($cohort, $context)) {
-        	throw new enrol_ajax_exception('invalidenrolinstance'); // TODO error text!
+            throw new enrol_ajax_exception('invalidenrolinstance'); // TODO error text!
         }
  
         $enrol = enrol_get_plugin('cohort');
@@ -475,64 +472,64 @@ switch ($action) {
         $outcome->success = true;
         break;
     case 'unenroluser':
-    	$userid = required_param('userid', PARAM_INT);
-    	//$enrolid = required_param('enrolid', PARAM_INT);
-    	
-    	$userenrolments = $manager->get_user_enrolments($userid);
-    	foreach ($userenrolments as &$userenrolment) {
-    			$pluginname = '';
-    			$pluginname = get_class($plugin);
-    			$myname = 'enrol_cohort_plugin';
-    			$comp = strcmp($pluginname,$myname);
-    			if ($comp != 0) {
-    				$plugin = $userenrolment->enrolmentplugin;
-    				$instance = $DB->get_record('enrol', array('id'=>$userenrolment->enrolid), '*', MUST_EXIST);
-    				$plugin->unenrol_user($instance, $userid);
-    			}
-    	}
-    	$outcome->success = true;
-    	break;
+        $userid = required_param('userid', PARAM_INT);
+        //$enrolid = required_param('enrolid', PARAM_INT);
+        
+        $userenrolments = $manager->get_user_enrolments($userid);
+        foreach ($userenrolments as &$userenrolment) {
+            $pluginname = '';
+            $pluginname = get_class($plugin);
+            $myname = 'enrol_cohort_plugin';
+            $comp = strcmp($pluginname,$myname);
+            if ($comp != 0) {
+                $plugin = $userenrolment->enrolmentplugin;
+                $instance = $DB->get_record('enrol', array('id'=>$userenrolment->enrolid), '*', MUST_EXIST);
+                $plugin->unenrol_user($instance, $userid);
+            }
+        }
+        $outcome->success = true;
+        break;
     case 'unenrolcohort':
-    	$enrolid = required_param('cohortid', PARAM_INT);
-    	$instance = $DB->get_record('enrol', array('id'=>$enrolid), '*', MUST_EXIST);
-    	$enrol = enrol_get_plugin('cohort');
-    	$enrol->delete_instance($instance);
-    	$outcome->success = true;
-    	break;
+        $enrolid = required_param('cohortid', PARAM_INT);
+        $instance = $DB->get_record('enrol', array('id'=>$enrolid), '*', MUST_EXIST);
+        $enrol = enrol_get_plugin('cohort');
+        $enrol->delete_instance($instance);
+        $outcome->success = true;
+        break;
     case 'unenrolalluser':
-    	$users = $manager->get_users('lastname', 'ASC', 0, 200);
-    	$useridconnect = $_SESSION['USER']->id;
-    	foreach ($users as &$user) {
-    		$userid = $user->id;
-    		$userenrolments = $manager->get_user_enrolments($user->id);
-    		foreach ($userenrolments as &$userenrolment) {
-    			$pluginname = '';
-    			$pluginname = get_class($userenrolment->enrolmentplugin);
-    			$myname = 'enrol_cohort_plugin';
-    			$comp = strcmp($pluginname,$myname);    
-    			if ($comp != 0) {
-    				if ($useridconnect != $userid || has_capability("enrol/simplesco:unenrolself", $context)) {
-    					$plugin = $userenrolment->enrolmentplugin;
-    					$instance = $DB->get_record('enrol', array('id'=>$userenrolment->enrolid), '*', MUST_EXIST);
-    					$plugin->unenrol_user($instance, $userid);
-    				}
-    				
-    			}
-    		}
-    	}
-    	$outcome->success = true;
-    	break;
+        $users = $manager->get_users('lastname', 'ASC', 0, 200);
+        $useridconnect = $_SESSION['USER']->id;
+        foreach ($users as &$user) {
+            $userid = $user->id;
+            $userenrolments = $manager->get_user_enrolments($user->id);
+            foreach ($userenrolments as &$userenrolment) {
+                $pluginname = '';
+                $pluginname = get_class($userenrolment->enrolmentplugin);
+                $myname = 'enrol_cohort_plugin';
+                $comp = strcmp($pluginname,$myname);    
+                if ($comp != 0) {
+                    if ($useridconnect != $userid || has_capability("enrol/simplesco:unenrolself", $context)) {
+                        $plugin = $userenrolment->enrolmentplugin;
+                        $instance = $DB->get_record('enrol', array('id'=>$userenrolment->enrolid), '*', MUST_EXIST);
+                        $plugin->unenrol_user($instance, $userid);
+                    }
+                    
+                }
+            }
+        }
+        $outcome->success = true;
+        break;
     case 'unenrolallcohort':
-    	$listeplugin = $manager->get_enrolment_instances();
-    	$enrol = enrol_get_plugin('cohort');
-    	foreach ($listeplugin as &$plugin_name) {
-    		if($plugin_name->enrol == 'cohort') {
-    			$instance = $DB->get_record('enrol', array('id'=>$plugin_name->id), '*', MUST_EXIST);
-    			$enrol->delete_instance($instance);
-    		}
-    	}
-    	$outcome->success = true;
-    	break;
+        $listeplugin = $manager->get_enrolment_instances();
+        $enrol = enrol_get_plugin('cohort');
+        foreach ($listeplugin as &$plugin_name) {
+            if($plugin_name->enrol == 'cohort') {
+                $instance = $DB->get_record('enrol', array('id'=>$plugin_name->id), '*', MUST_EXIST);
+                $enrol->delete_instance($instance);
+            }
+        }
+        $outcome->success = true;
+        break;
     default:
         throw new enrol_ajax_exception('unknowajaxaction');
 }

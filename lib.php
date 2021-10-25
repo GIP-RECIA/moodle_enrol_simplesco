@@ -30,19 +30,19 @@ class enrol_simplesco_plugin extends enrol_plugin {
     protected $lasternollerinstanceid = 0;
 
     public function __construct() {
-    	global $CFG;
-    	require_once($CFG->libdir.'/ldaplib.php');
+        global $CFG;
+        require_once($CFG->libdir.'/ldaplib.php');
     
-    	// Do our own stuff to fix the config (it's easier to do it
-    	// here than using the admin settings infrastructure). We
-    	// don't call $this->set_config() for any of the 'fixups'
-    	// (except the objectclass, as it's critical) because the user
-    	// didn't specify any values and relied on the default values
-    	// defined for the user type she chose.
-    	$this->load_config();
+        // Do our own stuff to fix the config (it's easier to do it
+        // here than using the admin settings infrastructure). We
+        // don't call $this->set_config() for any of the 'fixups'
+        // (except the objectclass, as it's critical) because the user
+        // didn't specify any values and relied on the default values
+        // defined for the user type she chose.
+        $this->load_config();
     
-    	// Make sure we get sane defaults for critical values.
-    	$this->config->ldapencoding = $this->get_config('ldapencoding', 'utf-8');
+        // Make sure we get sane defaults for critical values.
+        $this->config->ldapencoding = $this->get_config('ldapencoding', 'utf-8');
     
     }
     
@@ -105,7 +105,7 @@ class enrol_simplesco_plugin extends enrol_plugin {
      */
     public function add_course_navigation($instancesnode, stdClass $instance) {
         if ($instance->enrol !== 'simplesco') {
-             throw new coding_exception('Invalid enrol instance type!');
+            throw new coding_exception('Invalid enrol instance type!');
         }
 
         $context = context_course::instance($instance->courseid);
@@ -414,19 +414,18 @@ class enrol_simplesco_plugin extends enrol_plugin {
         $params = $manager->get_moodlepage()->url->params();
         $params['ue'] = $ue->id;
         if ($this->allow_unenrol_user($instance, $ue) && has_capability("enrol/simplesco:unenrol", $context)) {
-        	$useridliste = $ue->userid;
-        	$useridconnect = $_SESSION['USER']->id;
-        	if ($useridliste == $useridconnect) {
-        		if (has_capability("enrol/simplesco:unenrolself", $context)) {
-        			$url = new moodle_url('/enrol/unenroluser.php', $params);
-        			$actions[] = new user_enrolment_action(new pix_icon('t/delete', ''), get_string('unenrol', 'enrol'), $url, array('class'=>'unenrollink', 'rel'=>$ue->id));
-        		}
-        	} else {
-        		$url = new moodle_url('/enrol/unenroluser.php', $params);
-        		$actions[] = new user_enrolment_action(new pix_icon('t/delete', ''), get_string('unenrol', 'enrol'), $url, array('class'=>'unenrollink', 'rel'=>$ue->id));
-        		
-        	}
-        	
+            $useridliste = $ue->userid;
+            $useridconnect = $_SESSION['USER']->id;
+            if ($useridliste == $useridconnect) {
+                if (has_capability("enrol/simplesco:unenrolself", $context)) {
+                    $url = new moodle_url('/enrol/unenroluser.php', $params);
+                    $actions[] = new user_enrolment_action(new pix_icon('t/delete', ''), get_string('unenrol', 'enrol'), $url, array('class'=>'unenrollink', 'rel'=>$ue->id));
+                }
+            } else {
+                $url = new moodle_url('/enrol/unenroluser.php', $params);
+                $actions[] = new user_enrolment_action(new pix_icon('t/delete', ''), get_string('unenrol', 'enrol'), $url, array('class'=>'unenrollink', 'rel'=>$ue->id));
+            }
+            
         }
         if ($this->allow_manage($instance) && has_capability("enrol/simplesco:manage", $context)) {
             $url = new moodle_url('/enrol/editenrolment.php', $params);
@@ -601,6 +600,6 @@ class enrol_simplesco_plugin extends enrol_plugin {
     }
     
     public function getConfig($attr){
-    	return $this->config->$attr;
+        return $this->config->$attr;
     }
 }
