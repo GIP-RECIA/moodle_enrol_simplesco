@@ -221,6 +221,8 @@ class enrol_simplesco_plugin extends enrol_plugin {
         global $CFG, $PAGE;
         require_once($CFG->dirroot.'/cohort/lib.php');
 
+        static $called = false;
+
         $instance = null;
         $instances = array();
         foreach ($manager->get_enrolment_instances() as $tempinstance) {
@@ -258,10 +260,13 @@ class enrol_simplesco_plugin extends enrol_plugin {
             $arguments["start_dates"][] = get_string('coursestart') . ' (' . userdate($startdate, $timeformat) . ')';
         }
 
-        $PAGE->requires->js_call_amd('enrol_simplesco/choiceenrolment', 'init', array($arguments));
-        $PAGE->requires->js_call_amd('enrol_simplesco/userenrolment', 'init', array($arguments));
-        $PAGE->requires->js_call_amd('enrol_simplesco/cohortenrolment', 'init', array($arguments));
-        $PAGE->requires->js_call_amd('enrol_simplesco/unenrolment', 'init', array($arguments));
+        if (!$called) {
+            $called = true;
+            $PAGE->requires->js_call_amd('enrol_simplesco/choiceenrolment', 'init', array($arguments));
+            $PAGE->requires->js_call_amd('enrol_simplesco/userenrolment', 'init', array($arguments));
+            $PAGE->requires->js_call_amd('enrol_simplesco/cohortenrolment', 'init', array($arguments));
+            $PAGE->requires->js_call_amd('enrol_simplesco/unenrolment', 'init', array($arguments));
+        }
 
         return $buttons;
     }
