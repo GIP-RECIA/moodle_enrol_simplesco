@@ -1,12 +1,14 @@
+'use strict';
 /**
  * ESCO Enrolment AMD module.
  *
- * @module     enrol_manual/quickenrolment
+ * @module     enrol_simplesco/choiceenrolment
+ * @package    enrol_simplesco
  * @copyright  2016 Damyon Wiese <damyon@moodle.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 import $ from 'jquery';
-import Str from 'core/str';
+import {get_strings} from 'core/str';
 import Notification from 'core/notification';
 import ModalFactory from 'core/modal_factory';
 
@@ -14,51 +16,62 @@ const SELECTORS = {
     BUTTON_TRIGGER: ".enrolusersbutton.enrol_simplesco_plugin.enrol [type='submit']",
 };
 
-const ESCOChoiceEnrolment = (options) => {
-    this.contextid = options.contextid;
-    this.init();
-};
+class ESCOChoiceEnrolment {
+    /** @var {array} */
+    strings = null;
+    /** @var {number} courseid - */
+    courseid = 0;
 
-/** @var {number} courseid - */
-ESCOChoiceEnrolment.prototype.courseid = 0;
+    /** @var {Modal} modal */
+    modal = null;
 
-/** @var {Modal} modal */
-ESCOChoiceEnrolment.prototype.modal = null;
+    constructor(options) {
+        this.contextid = options.contextid;
+        this.init();
+    }
 
-ESCOChoiceEnrolment.prototype.init = () => {
-    const triggerButtons = $(SELECTORS.BUTTON_TRIGGER);
-    $(".singlebutton.enrol_manual_plugin").remove();
-
-    $.when(
-        Str.get_strings([
-            {key: 'choisetitle', component: 'enrol_simplesco'},
-            {key: 'btnenroluser', component: 'enrol_simplesco'},
-            {key: 'btnenrolcohort', component: 'enrol_simplesco'},
-        ]),
-        ModalFactory.create({
-            type: ModalFactory.types.DEFAULT,
-        }, triggerButtons)
-    ).then(function (strings, modal) {
-        this.modal = modal;
-
-        modal.setTitle(strings[0]);
-
-        let body = "";
-        body += '<button class="btn btn-primary btn-block" id="enrol_simplesco_adduser">' + strings[1] + '</button>';
-        body += '<button class="btn btn-primary btn-block" id="enrol_simplesco_addcohort">' + strings[2] + '</button>';
-
-        modal.setBody(body);
-
-        $('body').on('click', 'button#enrol_simplesco_adduser, button#enrol_simplesco_addcohort', () => {
-            modal.hide();
+    init() {
+        const triggerButtons = $(SELECTORS.BUTTON_TRIGGER);
+        Array.from(document.querySelectorAll(".singlebutton.enrol_manual_plugin")).forEach(button => {
+            button.remove();
         });
-    }.bind(this)).fail(Notification.exception);
 
-    const context = this;
-    $("body").on("click", SELECTORS.BUTTON_TRIGGER, () => {
-        context.modal.show();
-    });
-};
+        Promise.all([
+            get_strings([
+                {key: 'choisetitle', component: 'enrol_simplesco'},
+                {key: 'btnenroluser', component: 'enrol_simplesco'},
+                {key: 'btnenrolcohort', component: 'enrol_simplesco'},
+            ]),
+            ModalFactory.create({
+                type: ModalFactory.types.DEFAULT,
+            }, triggerButtons)])
+        .then(values => {
+            this.strings = values[0];
+            this.modal = values[1];
+
+            this.modal.setTitle(this.strings[0]);
+
+            const body = `<button class="btn btn-primary btn-block" id="enrol_simplesco_adduser">${this.strings[1]}</button>
+                <button class="btn btn-primary btn-block" id="enrol_simplesco_addcohort">${this.strings[2]}</button>`;
+
+            this.modal.setBody(body);
+
+            $('body').on('click', 'button#enrol_simplesco_adduser, button#enrol_simplesco_addcohort', () => {
+                this.modal.hide();
+            });
+        })
+        .catch(Notification.exception);
+
+
+        document.addEventListener('click', event => {
+            if (event.target.closest(SELECTORS.BUTTON_TRIGGER)) {
+                event.preventDefault();
+                this.modal.show();
+                return;
+            }
+        });
+    }
+}
 
 export const init = config => {
     (new ESCOChoiceEnrolment(config));
