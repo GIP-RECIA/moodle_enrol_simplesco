@@ -204,6 +204,7 @@ switch ($action) {
             $attrbValue = 'filter'.$num.'_list_filter';
             $ldapFilter = $enrol_simplesco->getConfig($attrbValue);
             for ($j = 1; $j <= $num ; $j++){
+                // TODO: voir si $nomvar et $$nomvar ne devraient pas être une seule et même variable ?
                 $nomvar = 'code'.$j;
                 if ($$nomvar != ''){
                     $ldapFilter = str_replace("{CODE".$j."}", $$nomvar, $ldapFilter);
@@ -241,7 +242,8 @@ switch ($action) {
             if ($$nomvar == null || $$nomvar == ''){
             
                 if ($enrol_simplesco->getConfig('filter'.$num.'_mandatory') && $$nomvar == ''){
-                    $$nomvar = array_shift(array_keys($list[$num]));
+                    $keys = array_keys($list[$num]);
+                    $$nomvar = array_shift($keys);
                 }
                 $defaultValue = '';
                 $defaultAttr = $enrol_simplesco->getConfig('filter'.$num.'_default');

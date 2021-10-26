@@ -80,15 +80,15 @@ class enrol_simpleldap_ldapsearch {
             $config_values = $this->instance->getConfig($filter.'_list_values');
             $values = explode(";", $config_values);
             foreach ($values as $value){
-                $val = explode("#", $value);
-                $key=$val[1];
-                $label=$val[0];
-                $list[$key] = $label;
-                //$list[$val[1]] = $val[0];
+                if ($value !== '') {
+                    $val = explode("#", $value);
+                    $key=$val[1];
+                    $label=$val[0];
+                    $list[$key] = $label;
+                    //$list[$val[1]] = $val[0];
+                }
             }
-
         } else {
-
             $ldapconnection = $this->ldapconn->ldap_connect();
             if (!$ldapconnection) {
                 return;
@@ -186,8 +186,8 @@ class enrol_simpleldap_ldapsearch {
                 $ldapFilter,
                 $attributes
                 );
-         
     
+        $list = array();
         foreach ($records as $record) {
             foreach ($attributes as $attribute) {
                 if (array_key_exists($attribute, $record) ){
