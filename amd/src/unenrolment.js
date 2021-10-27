@@ -337,7 +337,7 @@ class ESCOUnenrolment {
                     return Notification.exception(result);
                 }
                 this.require_refresh = true;
-                this.hide();
+                //this.hide();
             },
             error: (resultat, statut, erreur) => {
                 Notification.exception(erreur);
