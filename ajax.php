@@ -368,6 +368,7 @@ switch ($action) {
         $outcome->success = true;
         break;
     case 'searchcohortsenrol':
+        $usersfiltre = array();
         //$users = $manager->get_users('lastname', 'ASC', 0, 200);
         $listeplugin = $manager->get_enrolment_instances();
         $instances = enrol_get_instances($course->id, true);
