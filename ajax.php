@@ -247,7 +247,7 @@ switch ($action) {
                 }
                 $defaultValue = '';
                 $defaultAttr = $enrol_simplesco->getConfig('filter'.$num.'_default');
-                if ($defaultAttr != null) {
+                if ($defaultAttr != null && array_key_exists($defaultAttr, $userValues)) {
                     $defaultValue = $userValues[$defaultAttr][0];
                 }
             } else {
@@ -308,6 +308,7 @@ switch ($action) {
         break;
     case 'searchusersenrol':
         $users = $manager->get_users('lastname', 'ASC', 0, 200);
+        $usersfiltre = array();
         
         $extrafields = get_extra_user_fields($context);
         $useroptions = array();
@@ -480,7 +481,7 @@ switch ($action) {
         $userenrolments = $manager->get_user_enrolments($userid);
         foreach ($userenrolments as &$userenrolment) {
             $pluginname = '';
-            $pluginname = get_class($plugin);
+            $pluginname = get_class($userenrolment->enrolmentplugin);
             $myname = 'enrol_cohort_plugin';
             $comp = strcmp($pluginname,$myname);
             if ($comp != 0) {

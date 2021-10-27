@@ -125,14 +125,16 @@ class enrol_simpleldap_ldapsearch {
 
                     // Nouveau code :
                 } else {
-                    for ($j = 0; $j < $record[$keyAttr]["count"] ; $j++){
-                        $key = $record[$keyAttr][$j];
-                        if($labelAttr == "dn") {
-                            $label = $record[$labelAttr];
-                        } else {
-                            $label = $record[$labelAttr][$j];
+                    if (array_key_exists($keyAttr, $record)) {
+                        for ($j = 0; $j < $record[$keyAttr]["count"] ; $j++){
+                            $key = $record[$keyAttr][$j];
+                            if($labelAttr == "dn") {
+                                $label = $record[$labelAttr];
+                            } else {
+                                $label = $record[$labelAttr][$j];
+                            }
+                            $list[$key] = $label;
                         }
-                        $list[$key] = $label;
                     }
 
                     ////////////////////////////////////////////////
@@ -212,42 +214,29 @@ class enrol_simpleldap_ldapsearch {
     }
     
     public function matchLDAPVAlues1($listTmp, $userValues){
-        $liste = array();
-        for ($i = 0; $i < $userValues["escouai"]["count"] ; $i++){
-            $uai = $userValues["escouai"][$i] ;
-            if ($listTmp[$uai] != ''){
-                $liste[$uai] = $listTmp[$uai];
-            }
-        }
-        return $liste;
+        return $this->matchLDAPValuesParam($listTmp, $userValues, "escouai");
     }
     public function matchLDAPVAlues2($listFilter, $userValues){
         return $listFilter;
     }
     public function matchLDAPVAlues3($listTmp, $userValues){
-
-        $liste = array();
-        for ($i = 0; $i < $userValues["entauxensclasses"]["count"] ; $i++){
-            $classe = $userValues["entauxensclasses"][$i];
-            if ($listTmp[$classe] != ''){
-                $liste[$classe] = $listTmp[$classe];
-            }
-        }
-        return $liste;
+        return $this->matchLDAPValuesParam($listTmp, $userValues, "entauxensclasses");
     }
     public function matchLDAPVAlues4($listTmp, $userValues){
+        return $this->matchLDAPValuesParam($listTmp, $userValues, "entauxensgroupes");
+    }
+    private function matchLDAPValuesParam($listTmp, $userValues, $key) {
         $liste = array();
-        for ($i = 0; $i < $userValues["entauxensgroupes"]["count"] ; $i++){
-            $groupe = $userValues["entauxensgroupes"][$i];
-            if ($listTmp[$groupe] != ''){
-                $liste[$groupe] = $listTmp[$groupe];
+        if (array_key_exists($key, $userValues)) {
+            for ($i = 0; $i < $userValues[$key]["count"] ; $i++){
+                $elem = $userValues[$key][$i];
+                if ($listTmp[$elem] != ''){
+                    $liste[$elem] = $listTmp[$elem];
+                }
             }
         }
         return $liste;
     }
-
-
-
 }
 
 /**
