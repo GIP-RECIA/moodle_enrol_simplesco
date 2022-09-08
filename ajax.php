@@ -361,7 +361,7 @@ switch ($action) {
         $reponse = enrol_simplesco_get_potential_cohorts($context, $enrolid, $search, $page, $perpage, $addedenrollment);
         $groups = array(0 => get_string('none'));
         foreach (groups_get_all_groups($course->id) as $group) {
-            $groups[$group->id] = format_string($group->name, true, array('context'=>$coursecontext));
+            $groups[$group->id] = format_string($group->name, true, array('context'=>$context));
         }
         $reponse['group']=$groups;
         $outcome->response = $reponse;
