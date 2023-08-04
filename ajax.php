@@ -199,7 +199,7 @@ switch ($action) {
         $list = array();
         
         for ($i = 0; $i < strlen($numliste); $i++) {
-            $num=$numliste{$i};
+            $num=$numliste[$i];
             
             $attrbValue = 'filter'.$num.'_list_filter';
             $ldapFilter = $enrol_simplesco->getConfig($attrbValue);
