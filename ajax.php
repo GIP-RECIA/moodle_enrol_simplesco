@@ -36,6 +36,7 @@ require_once($CFG->dirroot.'/enrol/simplesco/locallib.php');
 require_once($CFG->dirroot.'/cohort/lib.php');
 require_once($CFG->dirroot.'/enrol/simplesco/ldapconn.php');
 require_once($CFG->dirroot.'/enrol/cohort/locallib.php');
+use core_user\fields;
 
 error_reporting(E_ALL);
 $id      = required_param('id', PARAM_INT); // Course id.
@@ -279,7 +280,7 @@ switch ($action) {
             //$outcome->response = $manager->get_potential_users($enrolid, $search, $searchanywhere, $page, $perpage, $addedenrollment);
         }
         
-        $extrafields = get_extra_user_fields($context);
+        $extrafields = fields::for_userpic()->excluding('id', 'idnumber', 'email', 'username', 'picture')->get_required_fields();
         $useroptions = array();
 
         // User is not enrolled yet, either link to site profile or do not link at all.
@@ -310,7 +311,7 @@ switch ($action) {
         $users = $manager->get_users('lastname', 'ASC', 0, 200);
         $usersfiltre = array();
         
-        $extrafields = get_extra_user_fields($context);
+        $extrafields = fields::for_userpic()->excluding('id', 'idnumber', 'email', 'username', 'picture')->get_required_fields();
         $useroptions = array();
         if (has_capability('moodle/user:viewdetails', context_system::instance())) {
             $useroptions['courseid'] = SITEID;
