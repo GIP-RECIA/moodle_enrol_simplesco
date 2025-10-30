@@ -28,15 +28,29 @@
 define('AJAX_SCRIPT', true);
 
 require('../../config.php');
+
+// Core libraries
 require_once($CFG->dirroot.'/enrol/locallib.php');
 require_once($CFG->dirroot.'/user/lib.php');
 require_once($CFG->dirroot.'/enrol/renderer.php');
 require_once($CFG->dirroot.'/group/lib.php');
-require_once($CFG->dirroot.'/enrol/simplesco/locallib.php');
 require_once($CFG->dirroot.'/cohort/lib.php');
+
+// Plugin libraries
+require_once($CFG->dirroot.'/enrol/simplesco/locallib.php');
 require_once($CFG->dirroot.'/enrol/simplesco/ldapconn.php');
 require_once($CFG->dirroot.'/enrol/cohort/locallib.php');
-use core_user\fields;
+
+// Core classes
+use \core_user\fields;
+use moodle_url;
+use moodle_exception;
+use stdClass;
+use coding_exception;
+
+// Context classes
+use context_course;
+use context_system;
 
 error_reporting(E_ALL);
 $id      = required_param('id', PARAM_INT); // Course id.
